@@ -148,7 +148,8 @@ namespace PcapngFile
 			UInt32 readLength = reader.ReadUInt32();
 			if (readLength != this.TotalLength)
 			{
-				throw new IOException("Closing field (Block Total Length) doesn't match opening field (readLength = " + readLength + ", this.TotalLength = " + this.TotalLength + ").");
+				//throw new IOException("Closing field (Block Total Length) doesn't match opening field (readLength = " + readLength + ", this.TotalLength = " + this.TotalLength + ").");
+                Console.WriteLine("Closing field (Block Total Length) doesn't match opening field (readLength = " + readLength + ", this.TotalLength = " + this.TotalLength + ").");
 			}
 		}
 

@@ -54,9 +54,15 @@ namespace PcapngFile
 		internal NameResolutionBlock(BinaryReader reader)
 			: base(reader)
 		{
+            long startPosition = reader.BaseStream.Position;
 			this.Records = this.ReadRecords(reader);
-			this.ReadOptions(reader);
-			this.ReadClosingField(reader);
+			this.ReadOptions(reader); //We try to read an option, but it makes no sense.  We are reading the options too early!
+            long endPosition = reader.BaseStream.Position;
+            if (endPosition - startPosition != this.TotalLength - 8-4) { //minus 8: substract the general header; minus 4: we havn't read the trailing length yet
+                Console.WriteLine("Did not understand all of the NameResolutionBlock. We have skipped " + (this.TotalLength - 8 - 4 - (endPosition - startPosition)) + " bytes.");
+                reader.BaseStream.Seek(((long)this.TotalLength) - 8 - 4 - (endPosition - startPosition), SeekOrigin.Current); //VERDICT: we overread 4 bytes!!
+            }
+            this.ReadClosingField(reader);
 		}
 
 		override protected void OnReadOptionsCode(UInt16 code, byte[] value)
